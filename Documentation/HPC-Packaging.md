@@ -1,6 +1,6 @@
 # How to package HPC Libraries for SUSE
 
-*Please Note: this document may change frequently, still*
+*Please Note: this document may change frequently*
 
 ## Introduction
 
@@ -15,7 +15,7 @@ feature of OBS is used. To utilize the macros, the line:
 needs to be included in the spec file.
 SUSE supports different versions of the same library built with different
 compilers and compiler versions and - if applicable - for different flavors
-and versions of MPI. Moreover, these libraries can be installed simultaniously.
+and versions of MPI. Moreover, these libraries can be installed simultaneously.
 
 This has the following implications:
 
@@ -34,7 +34,7 @@ are required (anything in [..] is optional):
 
 1. create an entry to the `_multibuild` file of the form:
 ```
-  <package>$compiler_family[${compiler_family_version}]-[${mpi_family}[${mpi_family_version}]]-]hpc[-${other_modifyper}]</package>
+  <package>$compiler_family[${compiler_family_version}]-[${mpi_family}[${mpi_family_version}]]-]hpc[-${other_modifier}]</package>
 ```
   like:
 ```
@@ -61,7 +61,7 @@ are required (anything in [..] is optional):
     ```
     3. Macro `%_vers` (the package version with underscores):
     ```
-    %define %_vers <package_version_with-_-repacing-.>
+    %define %_vers <package_version_with-_-replacing-.>
     ```
     (This may be replaced with a macro in the future.)
     Except for `%pname` you may use different names for
@@ -70,9 +70,9 @@ are required (anything in [..] is optional):
     purpose of this document, they are used consistently
     throughout here.
 
-4. for each package line in _multilib add conditionals like:
+4. for each package line in _multibuild add conditionals like:
    ```
-   %if "%flavor" == "$compiler_family[${compiler_family_version}]-[${mpi_family}[${mpi_family_version}]]-]hpc[-${other_modifyper}]"
+   %if "%flavor" == "$compiler_family[${compiler_family_version}]-[${mpi_family}[${mpi_family_version}]]-]hpc[-${other_modifier}]"
    %define compiler_family gnu
    [%define c_f_ver ${compiler_family_version}]
    [%define mpi_family ${mpi_family}]
@@ -136,7 +136,7 @@ are required (anything in [..] is optional):
    ```
    %hpc_debug
    ```
-   This can be added to any section which creates executible shell commands:
+   This can be added to any section which creates executable shell commands:
    ie `%prep`, `%build` and `%install`
 
 10. There are a number of macros available which may be used in arguments to
@@ -173,7 +173,7 @@ are required (anything in [..] is optional):
     ```
     The macro `%hpc_write_module_files` will create all the needed
     directories - only the content of the the main modules file will have to
-    be provided. Since `%hpc_write_module_files` expectes a 'here' document,
+    be provided. Since `%hpc_write_module_files` expects a 'here' document,
     make sure the 'body' follows in the next line and ends in a single `EOF`
     at the beginning of the line.
     There are some convenience macros to aid creating the content:
@@ -190,7 +190,7 @@ are required (anything in [..] is optional):
     which is to provide the modules files to add all required files and directories.
 
 13. If a (library) package installs a modules file, it needs to check if it
-    has been chosen as the default on unistall and remove this default.
+    has been chosen as the default on uninstall and remove this default.
     This can be handled by placing the macro
     ```
     %hpc_module_delete_if_default
@@ -218,7 +218,7 @@ are required (anything in [..] is optional):
 17. For any other path the macros described in 10. may be used.
 
 18. Master packages:
-    Master packages are there to install the lastest version of a specific
+    Master packages are there to install the latest version of a specific
     package without having to worry about the version number.
     In most cases, this should only be needed for the library and devel
     package. Only if the module files are in a separate package or there
@@ -243,7 +243,7 @@ are required (anything in [..] is optional):
     latest version of a package default (by setting a link in the module
     files).
     If the package which provides the module file linked to is uninstalled,
-    this link should be removed. This can be accomplised by creating a
+    this link should be removed. This can be accomplished by creating a
     `%postun` script for this package containing the macro:
     `%hpc_module_delete_if_default`.
 
@@ -266,7 +266,7 @@ python 2.7 and 3. These macros can be found in the macro file
 `macros.python_all` from the package python-rpm-macros. For the macros below
 to work it is expected that this macro file is available and its
 infrastructure is used.
-1. `%hpc_python_sitearch`:  provides the path to the arch dependend packages in
+1. `%hpc_python_sitearch`:  provides the path to the arch dependent packages in
   the HPC directory structure.
 2. `%hpc_python_version`: obtain an abbreviated python version number for
   package names and directories.

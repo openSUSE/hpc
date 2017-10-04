@@ -12,21 +12,21 @@ To make it possible that these different versions coexist on
 the same system and are available to each individual user
 according to his preferences, environment modules are used.
 
-At SUSE we will use Lmod, an environment framework written in
+At SUSE we use Lmod, an environment framework written in
 Lua.
 
 ## Implementation
 
 ### Installation Paths
 
-For different versions and falvors of the same library to be available
+For different versions and flavors of the same library to be available
 concurrently, each library - but also supporting files, like headers,
-plugins etc. need to reside in their own directory structure.
+plugins etc. - need to reside in their own directory structure.
 - this directory structure starts under `/usr/lib/hpc/`.
 - the next element shall be the compiler family name, optionally followed
   by the compiler 'dependency' version (usually the major version): 
   the version number is added only if the version is different 
-  from the base compiler for the product (*NOTE:* this may have 
+  from the base compiler for the product (*NOTE:* this may need
   to be changed to ease migration):
   `<compiler_family>[<compiler_dependency_version>]/`.
 - if the package was built with MPI support, this will be followed by 
@@ -37,11 +37,11 @@ plugins etc. need to reside in their own directory structure.
   (*NOTE2:* If different flavors of the same MPI family exist, which
   provide a different ABI and thus render MPI-dependent libraries flavor-
   dependent as well, the flavor may be appended to the family name,
-  separated by a hyphen: `<mpi_family>[-<flavor>]`. For the puropse
-  of depenencies, different flavors with different ABIs may be treated
+  separated by a hyphen: `<mpi_family>[-<flavor>]`. For the purpose
+  of dependencies, different flavors with different ABIs may be treated
   as different MPI families.)
 - this is followed by the package (ie library) name and an optional
-  flavor indentifier (separated from the library name by a hyphen `-`).
+  flavor identifier (separated from the library name by a hyphen `-`).
   `<package_name>[-<package_flavor>]/`
 - the package name directory is followed by a directory representing
   the package version: `<version>/`.
@@ -51,7 +51,7 @@ plugins etc. need to reside in their own directory structure.
 
 ### Package Naming Convention
 
-Libraries should follow this naming sceme to avoid conflicts between
+Libraries should follow this naming scheme to avoid conflicts between
 versions and flavors and to allow different versions to be installed
 in parallel.
 
@@ -62,7 +62,7 @@ The package name should consist of:
   in different flavors. The flavor shall be separated from the
   package name by a hyphen:
   `[-<build_flavor>]`
-- The package version (with any dot replaced by an underscore.
+- The package version (with any dot replaced by an underscore).
   The version is separated from the previous parts by an underscore:
   `_<package_version_underscore>`
 - The compiler family, separated by a hyphen:
@@ -73,7 +73,7 @@ The package name should consist of:
 - If the package requires MPI support, the MPI family used, separated
   by a hyphen, followed by the major version of the MPI family:
   `[-<mpi_family><mpi_family_version>]` (<mpi_family> may augmented
-  by a 'build flavor' if needed, spearated by a hyphen: `<mpi_family>[-<flavor>]`
+  by a 'build flavor' if needed, separated by a hyphen: `<mpi_family>[-<flavor>]`
 - followed by the string 'hpc' separated by a hyphen: `-hpc`.
 
 ### Environment Module files
@@ -87,10 +87,10 @@ versions.
 - this is followed by a directory according to the compiler family
   used. If a different compiler than the base compiler is used,
   the name of the directory is the name of the compiler family
-  combined with the compiler dependecy version (generally the major
-  version) separeated by a hyphen:
+  combined with the compiler dependency version (generally the major
+  version) separated by a hyphen:
   `<compiler_family_name>[-<compiler_family_dependency_version>]/`.
-- if the library uses MPI, this is folled by a directlry named
+- if the library uses MPI, this is followed by a directory named
   according to the MPI family used combined with the MPI family
   dependency version (generally the MPI family major version) separated
   by a hyphen:
