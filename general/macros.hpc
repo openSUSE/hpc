@@ -18,7 +18,7 @@
 
 # For mpi libraries
 %hpc_mpi_install_base %{hpc_base}%{?hpc_cf_dir}mpi/
-%hpc_mpi_install_path_base %{hpc_mpi_install_base}%{hpc_mpi_family}/
+%hpc_mpi_install_path_base %{hpc_mpi_install_base}%{hpc_mpi_family}%{?hpc_ext}/
 %hpc_mpi_install_path %{hpc_mpi_install_path_base}%{version}
 
 # Different paths - below HPC directory

@@ -2,7 +2,12 @@
 
 Directories:
 
-* `general/` Macros for HPC library packages
+* `general/` Macros and scripts for HPC library packages
+  * `macros.hpc` Scripts to simplify packaging libraries according to
+    the HPC packaging standard.
+  * `hpc_elf.attr`, `hpc_elflib.attr`, `hpc_elf.pl`, `dlinfo.c` RPM dependency
+     generator helpers  - check
+    [here](general/README.dependency-generators.md) for further details.
 * `MPI/` Macros for different MPI-flavors for MPI-dependent packages
          (referenced from `macros.suse-hpc`)
 * `compiler/` Macros for compilers (referenced from `macros.suse-hpc`)
