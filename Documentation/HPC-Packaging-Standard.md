@@ -13,7 +13,10 @@ the same system and are available to each individual user
 according to his preferences, environment modules are used.
 
 At SUSE we use Lmod, an environment framework written in
-Lua.
+Lua. Lmod is developed at
+[TACC](https://www.tacc.utexas.edu/research-development/tacc-projects/lmod).
+Check the links for [sources](https://github.com/TACC/Lmod) and 
+[documentation](http://lmod.readthedocs.org/).
 
 ## Implementation
 
