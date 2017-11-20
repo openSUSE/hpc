@@ -418,6 +418,7 @@ The package %{n_name}%{_p_ext} provides the dependency to get the latest version
 # Functions
 ##
 %hpc_upcase() %(echo %{**} | tr [a-z] [A-Z])
+%hpc_PNAME() %(echo %{**} | tr [a-z-] [A-Z_])
 
 ##
 # Macros specific for python packages
