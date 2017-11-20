@@ -465,6 +465,7 @@ The package %{n_name}%{_p_ext} provides the dependency to get the latest version
    local a_arg = rpm.expand("%{?-a:-a}") \
    local other_arg = rpm.expand("%{*}") \
    local pname = rpm.expand("%pname") \
+   local name = rpm.expand("%name") \
    local python_flavor = rpm.expand("%python_flavor") \
    -- io.stderr:write("n_arg "..n_arg.."\\n") \
    if n_arg ~= "" then \
@@ -472,7 +473,9 @@ The package %{n_name}%{_p_ext} provides the dependency to get the latest version
       -- io.stderr:write("n_arg modfied "..n_arg .."\\n") \
    end \
    local n_pname = pname:gsub("^python", python_flavor,1) \
+   local n_name = name:gsub("^python", python_flavor,1) \
    rpm.define("pname "..n_pname) \
+   rpm.define("name "..n_name) \
    add_args (g_arg, "-g") \
    add_args (n_arg, "-n") \
    add_args (l_arg) \
@@ -488,6 +491,7 @@ The package %{n_name}%{_p_ext} provides the dependency to get the latest version
    -- skip it entirely! \
       if _hpc_python_package_list[package] == true then \
          rpm.define("pname " .. pname) \
+         rpm.define("name " .. name) \
       	 return \
       else \
       	 _hpc_python_package_list[package] = true \
@@ -498,6 +502,7 @@ The package %{n_name}%{_p_ext} provides the dependency to get the latest version
    io.stderr:write("%{hpc_master_package " .. arg_list .. "}\\n\\n") \
    print(rpm.expand("%{hpc_master_package " .. arg_list .. "}") .."\\n") \
    rpm.define("pname " .. pname) \
+   rpm.define("name " .. name) \
    -- io.stderr:write("pname "..rpm.expand("%pname").."\\n\\n") \
 }
 
