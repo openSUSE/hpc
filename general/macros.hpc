@@ -521,3 +521,16 @@ The package %{n_name}%{_p_ext} provides the dependency to get the latest version
        done; \
      done
 
+#
+# Returns where MPI home is.
+# Looks in the RPM based on the arg name for bin/mpicc
+# and extracts mpihome from there.
+# This handles mpicc being in the main RPM, in a -devel
+# or in a dependency (when the top is an HPC meta RPM).
+# However all the necessary packages MUST be installed.
+%hpc_mpi_home() %( \
+   check_package(){ (rpm -ql $1 | egrep -q 'bin/mpicc$') && echo $1;};                \
+   get_linked_pack(){ rpm -qR $1 | grep -v rpmlib | grep -v /sh | awk '{print $1}';}; \
+   dirname $(dirname $(rpm -ql $(check_package %1 || check_package %1-devel ||        \
+   check_package $(get_linked_pack %1) || check_package $(get_linked_pack %1-devel)) | \
+   egrep 'bin/mpicc$')))
