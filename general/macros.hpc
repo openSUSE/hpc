@@ -14,7 +14,7 @@
 # For compilers
 %hpc_cf_install_base %{hpc_base}compiler/
 %hpc_cf_install_path_base %{hpc_cf_install_base}%{hpc_compiler_family}/
-%hpc_cf_install_path %{hpc_cf_install_path_base}%{hpc_cf_full_version}
+%hpc_cf_install_path %{hpc_cf_install_path_base}%{hpc_cf_dep_version}
 
 # For mpi libraries
 %hpc_mpi_install_base %{hpc_base}%{?hpc_cf_dir}mpi/
