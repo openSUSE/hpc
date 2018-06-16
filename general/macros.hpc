@@ -583,7 +583,7 @@ The package %{n_name}%{_p_ext} provides the dependency to get the latest version
          if [[ $line =~ \\#\\!.* ]]; then \
            true \
          else \
-            sed -i -e "1s;^;$_hpc_newline;" $file; \
+            sed -i -e "1s;^;$_hpc_newline\\n;" $file; \
          fi \
          chmod a+x $file \
        fi \
