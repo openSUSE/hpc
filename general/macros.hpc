@@ -394,20 +394,21 @@ cat << EOF > %{buildroot}%{hpc_module_dep_base}%{version}
  } \
  %{!-s:%define n_name %_name} \
  %{-s:%define n_name %(a=%{_name};echo -n ${a/%{_pname}/%{_pname}%{-s*}})} \
+ %{!-s:%define s_name %{_mylib}%{n_name}%{_p_ext}} \
+ %{-s:%define s_name %(echo -n %{_mylib}%{_name}%{_p_ext} | sed -e "s/\\(.*%{_pname}\\)\\(.*\\)/\\\\1%{-s*}\\\\2/")} \
 %package -n %_lname \
-Summary: Dependency package for %{n_name}%{_p_ext} \
+Summary: Dependency package for %{s_name} \
 Group:   %_group \
 Obsoletes: %_lname < %version \
-%{!-s:Requires:  %{_mylib}%{_name}%{_p_ext} = %version} \
-%{-s:Requires:  %(echo -n %{_mylib}%{_name}%{_p_ext} | sed -e "s/\\(.*%{_pname}\\)\\(.*\\)/\\\\1%{-s*}\\\\2/") = %version} \
+Requires:  %{s_name} = %version \
 %{!-l:%{!-s:%{!-a:BuildArch:      noarch}}} \
 %description -n %_lname \
-The package %{n_name}%{_p_ext} provides the dependency to get the latest version of %_pname \
+The package %{l_name} provides the dependency to get the latest binary package version of %{_pname} \
 %{-L:%post -n  %_lname \
   ln -sf %{hpc_module_dep_base}.version.%{version} %{hpc_module_dep_base}.version} \
 %files -n %{_lname} \
 %defattr(-,root,root)\
- %define _msg  '%{summary:0}: Provide the dependency to get the latest version of %_pname' \
+ %define _msg  '%{summary:0}: Provide the dependency to get the latest binary package version of %{_pname}' \
  %define _readme README.%{_mylib}%{_name}%{_p_ext} \
  %define _tmpexec %(tmp=$(mktemp /tmp/scr-XXXXXX); \
 	readme=%{_readme} \
