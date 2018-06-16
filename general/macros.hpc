@@ -168,6 +168,7 @@ EOF\
   %global tmp %__elflib_exclude_path \
   %global  __elflib_exclude_path (%tmp)|(^%hpc_base) \
   %undefine tmp \
+  %{expand:%([ 0%{?sle_version} -ge 150000 ] && echo %%global _hpc_python3 1)} \
   %global _hpc_init_done 1
 
 %hpc_init(Cc:Mm:v:V:e:) %{expand:%%_hpc_init %{**}}
@@ -184,7 +185,7 @@ EOF\
 %hpc_module_dep_install %{lua_lmod_moduledeps}/%{hpc_compiler_family_path}%{?hpc_mpi_family_path}
 
 # Install path base for the module file of the current package
-%_hpc_module_base       %{?!compiler_family:%{lua_lmod_modulesdir}}%{?compiler_family:%{?_hpc_build_compiler:%{lua_lmod_modulesdir}}%{!?_hpc_build_compiler:%{lua_lmod_moduledeps}}/}
+%_hpc_module_base       %{!?compiler_family:%{lua_lmod_modulesdir}}%{?compiler_family:%{?_hpc_build_compiler:%{lua_lmod_modulesdir}}%{!?_hpc_build_compiler:%{lua_lmod_moduledeps}}/}
 %hpc_module_dep_path    %{_hpc_module_base}%{hpc_compiler_family_path}%{!?_hpc_build_mpi:%{?hpc_mpi_family_path}}
 
 # install the module file here. If the default path (according to
@@ -428,15 +429,19 @@ The package %{n_name}%{_p_ext} provides the dependency to get the latest version
      print(s.get_paths(%{?3:vars={'platbase':\\"%3\\", 'base' : \\"%3\\"}}).get('%2'));")
 
 # get the python version specific directory for arch specific files in the HPC
-# directory structure.
+# directory structure (singlepsec).
 %hpc_python_sitearch %{_hpc_python_sysconfig_path %python_flavor platlib %{?hpc_prefix}}
+
+# same for non-singlespec (using internal %%_hpc_python3)
+%hpc_python_sitearch_no_singlespec %{_hpc_python_sysconfig_path %{?_hpc_python3:/usr/bin/python3}%{!?_hpc_python3:%python_flavor} platlib %{?hpc_prefix}}
 
 %_hpc_python_ver() %(%1 -c "import sys as s;print(s.version[:3]);")
 
-# get the (abbreviated_) pythin version used for package and directory names.
+# get the (abbreviated) python version used for package and directory names (singlespec).
 %hpc_python_version %{_hpc_python_ver %python_flavor}
 
 # %{hpc_python_master_package [-n <package_name>] [-g <group>] [-l][-L][-a]}
+# (singlespec)
 # -n: specify a package name
 # -g: specify a group name
 # -l: mark the package as library package
@@ -506,6 +511,110 @@ The package %{n_name}%{_p_ext} provides the dependency to get the latest version
    rpm.define("name " .. name) \
    -- io.stderr:write("pname "..rpm.expand("%pname").."\\n\\n") \
 }
+
+# %hpc_shebang_sanitize_scripts <dir>
+#
+# find all scripts in and below <dir> and sanitize any #!/usr/bin/env ..
+%hpc_shebang_sanitize_scripts() \
+  for file in $(find %{1} -type f); do \
+  line=$(head -1 $file) \
+  if [[ $line =~ \\#\\!.*bin/env ]]; then \
+     newline="" \
+     case $line in \
+     *python3) newline='#! /usr/bin/python3' ;; \
+     %{!?_hpc_python3: \
+     *python2) newline='#! /usr/bin/python2' ;; \
+     *python1*) %{hpc_verify_python3 $file} && \
+                  newline='#! /usr/bin/python3' || : ;; \
+     *python) newline='#! /usr/bin/python' ;; } \
+     %{?_hpc_python3: \
+     *python2|*python1*|*python) \
+        %{hpc_verify_python3 $file} && \
+           newline='#! /usr/bin/python3' || : ;; }\
+     *perl) newline='#! /usr/bin/perl' ;; \
+     *bash) newline='#! /bin/bash' ;; \
+     *tcsh) newline='#! /usr/bin/bash' ;; \
+     *csh) newline='#! /usr/bin/csh' ;; \
+     *ksh) newline='#! /usr/bin/ksh' ;; \
+     *) echo "hpc_cleanup_scripts: \"$line\" found - leaving untouched" >&2 ;;\
+     esac; \
+     [ -n "$newline" ] && sed -i "1s,^.*,${newline}\\n," $file \
+  fi \
+  done
+
+# %hpc_shebang_remove <file>
+#
+# remove any leading shebang (#!..) lines from <file>
+%hpc_shebang_remove() \
+  while true; do \
+    line=$(head -1 %{1}) \
+    if [[ $line =~ \\#\\!.* ]]; then \
+       sed -i "1d" %{1}; \
+    else \
+       break \
+    fi \
+  done
+
+# %hpc_shebang_prepend_list [ -n <ext> ] <filelist>
+#
+# prenpend a matching shebang, unless explicitely specified
+# using the -n <ext> option, it is determined by the file
+# 'extend'. Known types are: sh, csh, pl, py, awl, lua
+# the execute bit are also set.
+%hpc_shebang_prepend_list(n:) \
+  unset _hpc_engine \
+  %{-n:_hpc_shebang=%{-n*}} \
+  _hpc_files="%{*}" \
+  for file in $_hpc_files; do \
+    [ -n "$_hpc_engine" ] || _hpc_engine=${file##*.} \
+    if [ -n "$_hpc_engine" ]; then \
+       unset _hpc_newline \
+       case "$_hpc_engine" in \
+       sh) _hpc_newline='#! /bin/bash';; \
+       csh) _hpc_newline='#! /usr/bin/csh';; \
+       pl) _hpc_newline='#! /usr/bin/perl' ;; \
+       py) _hpc_newline='#! /usr/bin/python%{?_hpc_python3:3}' ;; \
+       awk) _hpc_newline='#! /usr/bin/awk -f' ;; \
+       lua) _hpc_newline='#! /usr/bin/lua' ;; \
+       *) echo "Unknown file type $_hpc_engine" ;; \
+       esac \
+       if [ -n "$_hpc_newline" ]; then \
+         line=$(head -1 $file) \
+         if [[ $line =~ \\#\\!.* ]]; then \
+           true \
+         else \
+            sed -i -e "1s;^;$_hpc_newline;" $file; \
+         fi \
+         chmod a+x $file \
+       fi \
+     fi \
+  done
+
+# %hpc_python_mv_to_sitearch <file>
+#
+# move <file> to python sitearch, remove shebang lines and
+# remove any excecute permissions.
+# This should be done on any python files that do not contain
+# any executable code.
+%hpc_python_mv_to_sitearch() \
+  _hpc_pydir=%hpc_python_sitearch_no_singlespec \
+  _hpc_base=$(basename %{1}) \
+  [ -d %{buildroot}/$_hpc_pydir ] || mkdir -p %{buildroot}/$_hpc_pydir \
+  mv %{buildroot}%{1} %{buildroot}/$_hpc_pydir \
+  chmod a-x %{buildroot}/$_hpc_pydir/$_hpc_base \
+  %{hpc_shebang_remove %{buildroot}/$_hpc_pydir/$_hpc_base}
+
+# %hpc_verify_python3 <file>
+#
+# verify that code in <file> is valid python 3
+%hpc_verify_python3() \
+  /usr/bin/python3 -c "import sys, ast\
+file=sys.argv[1]\
+try:\
+   ast.parse(open(file).read()) or sys.exit(1)\
+except SyntaxError:\
+   sys.exit(1) \
+sys.exit(0)" %{1}
 
 #
 # man pages
