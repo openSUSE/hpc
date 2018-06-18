@@ -403,17 +403,18 @@ Obsoletes: %_lname < %version \
 Requires:  %{s_name} = %version \
 %{!-l:%{!-s:%{!-a:BuildArch:      noarch}}} \
 %description -n %_lname \
-The package %{l_name} provides the dependency to get the latest binary package version of %{_pname} \
+The package %{l_name} provides the dependency to get binary package %{s_name} \
+When this package gets updated it installs the latest version of %name. \
 %{-L:%post -n  %_lname \
   ln -sf %{hpc_module_dep_base}.version.%{version} %{hpc_module_dep_base}.version} \
 %files -n %{_lname} \
 %defattr(-,root,root)\
- %define _msg  '%{summary:0}: Provide the dependency to get the latest binary package version of %{_pname}' \
+ %define _msg  '%{summary:0}: Provide the dependency to get binary package %{s_name\\\\nWhen this package gets updated it installs the latest version of %name.}' \
  %define _readme README.%{_mylib}%{_name}%{_p_ext} \
  %define _tmpexec %(tmp=$(mktemp /tmp/scr-XXXXXX); \
 	readme=%{_readme} \
 	echo  "#!/bin/bash" > $tmp; \
-	echo  "echo %_msg \> $readme && rm -f $tmp || true" >> $tmp; \
+	echo  "echo -e %_msg \> $readme && rm -f $tmp || true" >> $tmp; \
 	chmod u+x $tmp; echo -n $tmp) \
 %doc $(%_tmpexec)./%{_readme} \
 } \
