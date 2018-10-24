@@ -395,7 +395,7 @@ cat << EOF > %{buildroot}%{hpc_module_dep_base}%{version}
  %{!-s:%define n_name %_name} \
  %{-s:%define n_name %(a=%{_name};echo -n ${a/%{_pname}/%{_pname}%{-s*}})} \
  %{!-s:%define s_name %{_mylib}%{n_name}%{_p_ext}} \
- %{-s:%define s_name %(echo -n %{_mylib}%{_name}%{_p_ext} | sed -e "s/\\(.*%{_pname}\\)\\(.*\\)/\\\\1%{-s*}\\\\2/")} \
+ %{-s:%define s_name %(echo -n %{_mylib}%{_name}%{_p_ext} | sed -e "s/\\\\(.*%{_pname}\\\\)\\\\(.*\\\\)/\\\\1%{-s*}\\\\2/")} \
 %package -n %_lname \
 Summary: Dependency package for %{s_name} \
 Group:   %_group \
