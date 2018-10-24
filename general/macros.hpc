@@ -369,7 +369,7 @@ cat << EOF > %{buildroot}%{hpc_module_dep_base}%{version}
  } \
  %{-n:%define _lname %{-n*}} \
  %{!-n:\
-  %define _lname_cf %{?compiler_family:-%{compiler_family}%{?hpc_cf_pack_version}} \
+  %define _lname_cf %{?compiler_family:-%{hpc_compiler_family}%{?hpc_cf_pack_version}} \
   %define _lname_mpi %{!?_hpc_build_mpi:%{?hpc_mpi_family:-%{hpc_mpi_family}%{?hpc_mpi_pack_version}}} \
   %define _lname_build_mpi_name %{?_hpc_build_mpi:%{hpc_mpi_family}%{?hpc_ext}%{?hpc_mpi_pack_version}} \
   %define _lname_name %{!?_hpc_build_mpi:%{_pname}%{?hpc_ext}%{-s*}} \
