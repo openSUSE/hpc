@@ -89,7 +89,7 @@ EOF\
 # Base
 %hpc_requires Requires: lua-lmod \
 %{?hpc_compiler_family:%{!?_hpc_build_compiler:%hpc_cf_requires}}\
-%{?hpc_mpi_family:%{!?_hpc_build_mpi:%hpc_mpi_requires}}\
+%{?hpc_mpi_family:%{!?_hpc_build_mpi:%hpc_mpi_requires}}
 
 # Devel
 %hpc_requires_devel %{?hpc_compiler_family:%{!?_hpc_build_compiler:%hpc_cf_requires_devel}}\
@@ -176,7 +176,7 @@ EOF\
 #
 # Environment Modules
 #
-%hpc_mpi_family_path %{?hpc_mpi_family:-%{hpc_mpi_family}%([ -n "%{hpc_mpi_dep_version}" ] &&
+%hpc_mpi_family_path %{?hpc_mpi_family:-%{hpc_mpi_family}%([ -n "%{hpc_mpi_dep_version}" ] && \
                      echo -n "-%{hpc_mpi_dep_version}")}
 
 %hpc_compiler_family_path %{?hpc_compiler_family:%{hpc_compiler_family}-%{hpc_cf_dep_version}}
