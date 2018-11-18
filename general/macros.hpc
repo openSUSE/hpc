@@ -196,6 +196,15 @@ EOF\
 # This can be overridden in the spec file.
 %hpc_module_pname %pname
 
+# Modules init: Set up modules required for building
+# %hpc_modules_init <module_list>
+# <module_list>: list of modules (exclude compiler and MPI library).
+#                May be empty if only compiler and MPI library are needed.
+%hpc_modules_init() \
+  %{!?_hpc_init_done: %{error: "%%hpc_setup_compiler: Call %%hpc_init first!"}} \
+  %{?*:%global _hpc_modules_other %{**}} \
+   %global _hpc_modules %{?hpc_compiler_family:%{expand:%%{?%{expand:_hpc_%{hpc_compiler_family}_module}}}} %{?hpc_mpi_family:%{expand:%%{?%{expand:_hpc_%{hpc_mpi_family}_module}}}} %{?_hpc_modules_other}
+
 %hpc_setup_compiler  \
   %{!?_hpc_init_done: %{error: "%%hpc_setup_compiler: Call %%hpc_init first!"}} \
    module purge \
@@ -206,7 +215,8 @@ EOF\
 
 %hpc_setup \
    %hpc_setup_compiler  \
-   %{!?_hpc_build_mpi:%hpc_setup_mpi}
+   %{!?_hpc_build_mpi:%hpc_setup_mpi} \
+   %{?_hpc_modules_other:[ -n "%{?_hpc_modules_other}" ] && module load %_hpc_modules_other}
 
 # delete default in %postun
 %hpc_module_delete_if_default \

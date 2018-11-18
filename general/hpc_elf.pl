@@ -49,6 +49,8 @@ while ( $a = shift @ARGV ) {
 	 $a =~ /--no-fake-soname/ ||
 	 $a =~ /--filter-private/ ) {
 	 $arglist .= " " . $a;
+    } elsif ( $a =~ /--modules/ ) {
+	$modules = shift @ARGV;
     } elsif ( $a =~ /--help/ || $a =~ /-?/ ) {
 	help;
     } elsif ( $a =~ /--usage/ ) {
@@ -60,6 +62,11 @@ while ( $a = shift @ARGV ) {
 
 open HANDLE, "$command $arglist |";
 
+if ( $modules ) {
+    $ldlibrarypath = `module load $modules; echo \$LD_LIBRARY_PATH`;
+    chop $ldlibrarypath;
+}
+
 while ((chop($line = <HANDLE>))) {
     $line =~ /([^\(]+)(.*)/;
     $libs{$1}{$2} = 1;
@@ -67,8 +74,15 @@ while ((chop($line = <HANDLE>))) {
 
 foreach $lib ( keys %libs ) {
     $full=`$dlinfo $lib`;
+    chop $full;
     if (!$full) {
 	delete $libs{$lib};
+    } elsif ( $ldlibrarypath ) {
+	$hpc = `LD_LIBRARY_PATH=$ldlibrarypath $dlinfo $lib`;
+	chop $hpc;
+	if ( $full ne $hpc) {
+	    delete $libs{$lib};
+	}
     }
 }
 foreach $lib ( keys %libs ) {
