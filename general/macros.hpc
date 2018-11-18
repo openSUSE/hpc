@@ -403,7 +403,7 @@ Obsoletes: %_lname < %version \
 Requires:  %{s_name} = %version \
 %{!-l:%{!-s:%{!-a:BuildArch:      noarch}}} \
 %description -n %_lname \
-The package %{l_name} provides the dependency to get binary package %{s_name} \
+The package %{_lname} provides the dependency to get binary package %{s_name} \
 When this package gets updated it installs the latest version of %name. \
 %{-L:%post -n  %_lname \
   ln -sf %{hpc_module_dep_base}.version.%{version} %{hpc_module_dep_base}.version} \
