@@ -634,3 +634,19 @@ sys.exit(0)" %{1}
        done; \
      done
 
+# wraps macro from macros.cmake - paths replaced by HPC paths.
+%hpc_cmake \
+ %{!?cmake:%{error: please include macros.cmake}} \
+ %{?cmake: \
+    %global __cmake %{_bindir}/cmake \
+    %define _prefix %{hpc_prefix} \
+    %define _includedir %{hpc_includedir} \
+    %define _libdir %{hpc_libdir} \
+    %define _datadir %{hpc_datadir} \
+    %cmake \\\
+    %undefine __cmake \\\
+    %undefine _prefix \\\
+    %undefine _includedir \\\
+    %undefine _libdir \\\
+    %undefine _datadir \\\
+ }
