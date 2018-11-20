@@ -604,14 +604,14 @@ When this package gets updated it installs the latest version of %name. \
      fi \
   done
 
-# %hpc_python_mv_to_sitearch <file>
+# %hpc_python_mv_to_sitearch <file> [<subdir>]
 #
-# move <file> to python sitearch, remove shebang lines and
-# remove any excecute permissions.
+# move <file> to python sitearch subdir <subdir> if set, remove shebang
+# lines and remove any excecute permissions.
 # This should be done on any python files that do not contain
 # any executable code.
 %hpc_python_mv_to_sitearch() \
-  _hpc_pydir=%hpc_python_sitearch_no_singlespec \
+  _hpc_pydir=%{hpc_python_sitearch_no_singlespec}%{?2:/%{2}} \
   _hpc_base=$(basename %{1}) \
   [ -d %{buildroot}/$_hpc_pydir ] || mkdir -p %{buildroot}/$_hpc_pydir \
   mv %{buildroot}%{1} %{buildroot}/$_hpc_pydir \
