@@ -613,9 +613,9 @@ When this package gets updated it installs the latest version of %name. \
 %hpc_python_mv_to_sitearch() \
   _hpc_pydir=%{hpc_python_sitearch_no_singlespec}%{?2:/%{2}} \
   _hpc_base=$(basename %{1}) \
-  [ -d %{buildroot}/$_hpc_pydir ] || mkdir -p %{buildroot}/$_hpc_pydir \
-  mv %{buildroot}%{1} %{buildroot}/$_hpc_pydir \
-  chmod a-x %{buildroot}/$_hpc_pydir/$_hpc_base \
+  [ -d %{buildroot}/$_hpc_pydir ] || mkdir -p %{buildroot}/${_hpc_pydir} \
+  mv %{buildroot}%{1} %{buildroot}/${_hpc_pydir} \
+  [[ "$_hpc_base" =~ .*\.so ]] || chmod a-x %{buildroot}/$_hpc_pydir/$_hpc_base \
   %{hpc_shebang_remove %{buildroot}/$_hpc_pydir/$_hpc_base}
 
 # %hpc_verify_python3 <file>
