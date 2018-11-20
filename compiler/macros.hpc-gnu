@@ -22,7 +22,8 @@
 	     echo ${FULL_VERSION%%.*} || \\\
 	     echo ${FULL_VERSION%%%%.*})} \
  %{expand: %%global hpc_gnu_pack_version %{?_cf_ver}%{!?_cf_ver:%%{nil}}} \
- %{expand: %%global hpc_gnu_dir gnu%{hpc_gnu_dep_version}}
+ %{expand: %%global hpc_gnu_dir gnu%{hpc_gnu_dep_version}} \
+ %{expand: %%global _hpc_gnu_module gnu/%hpc_gnu_dep_version}
 
 %hpc_setup_gnu \
     export CC=gcc%{hpc_gnu_bin_version} \
