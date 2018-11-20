@@ -16,10 +16,11 @@
  	     gcc%{hpc_gnu_bin_version} --version |\\\
 	     head -1 |\\\
 	     sed -e "s#.* \\([0-9]\\+\\.[0-9.]\\+\\)\\(\$\\| .*\\)#\\1#")}\
-# FIXME: We may just want to pick the major.minor or major version only \
  %{expand: %%global hpc_gnu_dep_version %(\\\
  	     FULL_VERSION=%hpc_gnu_full_version; \\\
-	     echo ${FULL_VERSION%.*})} \
+ 	     [ ${FULL_VERSION%%%%.*} -lt 5 ] && \\\
+	     echo ${FULL_VERSION%%.*} || \\\
+	     echo ${FULL_VERSION%%%%.*})} \
  %{expand: %%global hpc_gnu_pack_version %{?_cf_ver}%{!?_cf_ver:%%{nil}}} \
  %{expand: %%global hpc_gnu_dir gnu%{hpc_gnu_dep_version}}
 
@@ -28,7 +29,7 @@
     export CXX=g++%{hpc_gnu_bin_version}  \
     export FC=gfortran%{hpc_gnu_bin_version} \
     export F77=gfortran%{hpc_gnu_bin_version} \
-    module load gnu/%hpc_cf_full_version
+    module load gnu/%hpc_gnu_dep_version
 
 # Requires:
 %hpc_gnu_requires \
