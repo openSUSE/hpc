@@ -168,7 +168,7 @@ EOF\
   %global tmp %__elflib_exclude_path \
   %global  __elflib_exclude_path (%tmp)|(^%hpc_base) \
   %undefine tmp \
-  %{expand:%([ 0%{?sle_version} -ge 150000 ] && echo %%global _hpc_python3 1)} \
+  %{expand:%([ 0%{?sle_version} -ge 150000 -o 0%{?suse_version} -gt 1500 ] && echo %%global _hpc_python3 1)} \
   %global _hpc_init_done 1
 
 %hpc_init(Cc:Mm:v:V:e:) %{expand:%%_hpc_init %{**}}
