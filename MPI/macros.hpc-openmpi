@@ -13,8 +13,8 @@
  module load openmpi
 
 %hpc_openmpi_requires \
-Requires:  libopenmpi%{hpc_openmpi_dep_version}-%{compiler_family}%{hpc_cf_pack_version}-hpc
+Requires:  libopenmpi%{hpc_openmpi_dep_version}-%{hpc_compiler_family}%{hpc_cf_pack_version}-hpc
 
 %hpc_openmpi_requires_devel \
-Requires:  openmpi%{hpc_openmpi_dep_version}-%{compiler_family}%{hpc_cf_pack_version}-hpc-devel
+Requires:  openmpi%{hpc_openmpi_dep_version}-%{hpc_compiler_family}%{hpc_cf_pack_version}-hpc-devel
 
