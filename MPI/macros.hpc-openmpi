@@ -6,7 +6,8 @@
  %{-V: %define _mf_ver %{-V*}} \
  %{expand: %%global hpc_openmpi_dep_version %%{?_mf_ver}%%{!?_mf_ver:1}} \
  %{expand: %%global hpc_openmpi_dir openmpi%{hpc_openmpi_dep_version}} \
- %{expand: %%global hpc_openmpi_pack_version %{hpc_openmpi_dep_version}}
+ %{expand: %%global hpc_openmpi_pack_version %{hpc_openmpi_dep_version}} \
+ %{expand: %%global _hpc_openmpi_modules openmpi}
 
 # We may have to add a version here.
 %hpc_setup_openmpi \
