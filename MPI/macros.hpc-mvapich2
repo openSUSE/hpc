@@ -13,8 +13,8 @@
  module load mvapich2
 
 %hpc_mvapich2_requires \
-Requires:  mvapich2%{hpc_mvapich2_dep_version}-%{compiler_family}%{hpc_cf_pack_version}-hpc
+Requires:  mvapich2%{hpc_mvapich2_dep_version}-%{hpc_compiler_family}%{hpc_cf_pack_version}-hpc
 
 %hpc_mvapich2_requires_devel \
-Requires:  mvapich2%{hpc_mvapich2_dep_version}-%{compiler_family}%{hpc_cf_pack_version}-hpc-devel
+Requires:  mvapich2%{hpc_mvapich2_dep_version}-%{hpc_compiler_family}%{hpc_cf_pack_version}-hpc-devel
 
