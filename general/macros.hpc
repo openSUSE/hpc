@@ -362,7 +362,8 @@ cat << EOF > %{buildroot}%{hpc_module_dep_base}%{version}
 # -l: mark a library package, prepend the package name with a `lib` (like -s
 #     but without an explicite so version. Do not use -l and -s together.
 # -L: Create a link from the .version.<version_no> file to the .version file
-#     to mark the default version.
+#     to mark the default version. To undo, add %hpc_module_delete_if_default
+#     to the package the master is created for.
 # -a: Use native arch even if no library package.
 # -N  <pname>: Specify if a sub-package has different basename (pname)
 # -q: For internal use only!
