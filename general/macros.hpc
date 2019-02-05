@@ -32,9 +32,12 @@
 %hpc_libexecdir %{hpc_prefix}/lib
 %hpc_localstatedir %{_localstatedir}
 %hpc_sharedstatedir %{_sharedstatedir}
-%hpc_mandir %{hpc_prefix}/share/man
-%hpc_infodir %{hpc_prefix}/share/info
+%hpc_mandir %{hpc_datadir}/man
+%hpc_docdir %{hpc_datadir}/doc/packages
+%hpc_infodir %{hpc_datadir}/info
 %hpc_pkgconfigdir %{hpc_libdir}/pkgconfig
+%hpc_cmake_dir %{hpc_datadir}/cmake
+%hpc_cmake_moddir %{hpc_cmake_dir}/Modules
 
 # pkgconfig
 # %hpc_write_pkgconfig [-l <libname>][-n <pkgfile_name>]
@@ -294,7 +297,7 @@ cat << EOF > %{buildroot}%{hpc_module_dep_base}%{version}
    --exec-prefix=%{hpc_exec_prefix} \\\
    --bindir=%{hpc_bindir} \\\
    --sbindir=%{hpc_sbindir} \\\
-   --sysconfdir=%{_sysconfdir} \\\
+   --sysconfdir=%{hpc_sysconfdir} \\\
    --datadir=%{hpc_datadir} \\\
    --includedir=%{hpc_includedir} \\\
    --libdir=%{hpc_libdir} \\\
@@ -637,7 +640,7 @@ sys.exit(0)" %{1}
 %hpc_compress_man() \
      [ -n "%{*}" ] || { echo "no man page list!" >&2 ; exit 1; } \
      for j in %{*}; do \
-       for i in $(ls %{buildroot}%hpc_mandir/man${j}/*.${j}* | grep -v ".*\.gz$"); \
+       for i in $(ls %{buildroot}%{hpc_mandir}/man${j}/*.${j}* | grep -v ".*\.gz$"); \
        do \
          test -L $i && continue \
 	 gzip $i \
@@ -646,17 +649,66 @@ sys.exit(0)" %{1}
 
 # wraps macro from macros.cmake - paths replaced by HPC paths.
 %hpc_cmake \
- %{!?cmake:%{error: please include macros.cmake}} \
- %{?cmake: \
+  %{!?cmake:%{error: please include macros.cmake}} \
+  %{?cmake: \
     %global __cmake %{_bindir}/cmake \
-    %define _prefix %{hpc_prefix} \
-    %define _includedir %{hpc_includedir} \
-    %define _libdir %{hpc_libdir} \
+    %define _bindir %{hpc_bindir} \
     %define _datadir %{hpc_datadir} \
+    %define _includedir %{hpc_includedir} \
+    %define _infodir %{hpc_infodir} \
+    %define _libdir %{hpc_libdir} \
+    %define _libexecdir %{hpc_libexecdir} \
+    %define _localstatedir %{hpc_localstatedir} \
+    %define _mandir %{hpc_mandir} \
+    %define _prefix %{hpc_prefix} \
+    %define _sbindir %{hpc_sbindir} \
+    %define _sharedstatedir %{hpc_sharedstatedir} \
+    %define _sysconfdir %{hpc_sysconfdir} \
     %cmake \\\
     %undefine __cmake \\\
-    %undefine _prefix \\\
-    %undefine _includedir \\\
-    %undefine _libdir \\\
+    %undefine _bindir \\\
     %undefine _datadir \\\
+    %undefine _includedir \\\
+    %undefine _infodir \\\
+    %undefine _libdir \\\
+    %undefine _libexecdir \\\
+    %undefine _localstatedir \\\
+    %undefine _mandir \\\
+    %undefine _prefix \\\
+    %undefine _sbindir \\\
+    %undefine _sharedstatedir \\\
+    %undefine _sysconfdir \\\
+ }
+
+# wraps macro from macros.meson - paths replaced by HPC paths.
+%hpc_meson \
+  %{!?meson:%{error: please include macros.meson}} \
+  %{?meson: \
+    %global __meson %{_bindir}/meson \
+    %define _bindir %{hpc_bindir} \
+    %define _datadir %{hpc_datadir} \
+    %define _includedir %{hpc_includedir} \
+    %define _infodir %{hpc_infodir} \
+    %define _libdir %{hpc_libdir} \
+    %define _libexecdir %{hpc_libexecdir} \
+    %define _localstatedir %{hpc_localstatedir} \
+    %define _mandir %{hpc_mandir} \
+    %define _prefix %{hpc_prefix} \
+    %define _sbindir %{hpc_sbindir} \
+    %define _sharedstatedir %{hpc_sharedstatedir} \
+    %define _sysconfdir %{hpc_sysconfdir} \
+    %meson \\\
+    %undefine __meson \\\
+    %undefine _bindir \\\
+    %undefine _datadir \\\
+    %undefine _includedir \\\
+    %undefine _infodir \\\
+    %undefine _libdir \\\
+    %undefine _libexecdir \\\
+    %undefine _localstatedir \\\
+    %undefine _mandir \\\
+    %undefine _prefix \\\
+    %undefine _sbindir \\\
+    %undefine _sharedstatedir \\\
+    %undefine _sysconfdir \\\
  }
