@@ -663,7 +663,7 @@ sys.exit(0)" %{1}
     %define _prefix %{hpc_prefix} \
     %define _sbindir %{hpc_sbindir} \
     %define _sharedstatedir %{hpc_sharedstatedir} \
-    %define _sysconfdir %{hpc_sysconfdir} \
+#Do NOT define _sysconfig to %%hpc_sysconfig here!
     %cmake \\\
     %undefine __cmake \\\
     %undefine _bindir \\\
@@ -677,7 +677,6 @@ sys.exit(0)" %{1}
     %undefine _prefix \\\
     %undefine _sbindir \\\
     %undefine _sharedstatedir \\\
-    %undefine _sysconfdir \\\
  }
 
 # wraps macro from macros.meson - paths replaced by HPC paths.
