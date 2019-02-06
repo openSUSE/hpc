@@ -223,9 +223,10 @@ EOF\
 
 # delete default in %postun
 %hpc_module_delete_if_default \
-  _tmp=$(readlink -e %{hpc_module_dep_base}/version) && \
-  test "$_tmp" = "$(readlink -f %{hpc_module_dep_base}/.version.%{version})" && \
-  rm -f %{hpc_module_dep_base}/version || exit 0
+  _tmp=$(readlink -f %{hpc_module_dep_base}.version) && \\\
+  test "$_tmp" = "$(readlink -f %{hpc_module_dep_base}.version.%{version})" \\\
+    -o "x" = "x$(readlink -e %{hpc_module_dep_base}.version)" && \\\
+  rm -f %{hpc_module_dep_base}.version || exit 0
 
 #
 %hpc_write_modules_version_file \
@@ -419,8 +420,9 @@ Requires:  %{s_name} = %version \
 %description -n %_lname \
 The package %{_lname} provides the dependency to get binary package %{s_name} \
 When this package gets updated it installs the latest version of %name. \
-%{-L:%post -n  %_lname \
-  ln -sf %{hpc_module_dep_base}.version.%{version} %{hpc_module_dep_base}.version} \
+%{-L:%posttrans -n  %_lname \
+  [ -e %{hpc_module_dep_base}.version.%{version} ] && \\\
+  ln -sf .version.%{version} %{hpc_module_dep_base}.version} \
 %files -n %{_lname} \
 %defattr(-,root,root)\
  %define _msg  '%{summary:0}: Provide the dependency to get binary package %{s_name\\\\nWhen this package gets updated it installs the latest version of %name.}' \
