@@ -56,7 +56,7 @@ includedir=%{hpc_includedir} \
 sysconfdir=%{hpc_sysconfdir} \
 \
 Name: %pname \
-Description: %{summary:0} \
+Description: %{SUMMARY} \
 Version: %version \
 Libs: -L${libdir} %{?-l:-l%{-l*}} \
 Cflags: -I${includedir} \
@@ -425,7 +425,7 @@ When this package gets updated it installs the latest version of %name. \
   ln -sf .version.%{version} %{hpc_module_dep_base}.version} \
 %files -n %{_lname} \
 %defattr(-,root,root)\
- %define _msg  '%{summary:0}: Provide the dependency to get binary package %{s_name\\\\nWhen this package gets updated it installs the latest version of %name.}' \
+ %define _msg  '%{summary}: Provide the dependency to get binary package %{s_name\\\\nWhen this package gets updated it installs the latest version of %name.}' \
  %define _readme README.%{_mylib}%{_name}%{_p_ext} \
  %define _tmpexec %(tmp=$(mktemp /tmp/scr-XXXXXX); \
 	readme=%{_readme} \
