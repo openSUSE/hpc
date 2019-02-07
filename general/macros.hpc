@@ -418,14 +418,15 @@ Obsoletes: %_lname < %version \
 Requires:  %{s_name} = %version \
 %{!-l:%{!-s:%{!-a:BuildArch:      noarch}}} \
 %description -n %_lname \
-The package %{_lname} provides the dependency to get binary package %{s_name} \
+%{pname}: %{SUMMARY} \
+The package %{_lname} provides the dependency to get binary package %{s_name}. \
 When this package gets updated it installs the latest version of %name. \
 %{-L:%posttrans -n  %_lname \
   [ -e %{hpc_module_dep_base}.version.%{version} ] && \\\
   ln -sf .version.%{version} %{hpc_module_dep_base}.version} \
 %files -n %{_lname} \
 %defattr(-,root,root)\
- %define _msg  '%{summary}: Provide the dependency to get binary package %{s_name\\\\nWhen this package gets updated it installs the latest version of %name.}' \
+ %define _msg  '%{pname}: %{SUMMARY}.\\\\nProvide the dependency to get binary package %{s_name}.\\\\nWhen this package gets updated it installs the latest version of %{pname}.' \
  %define _readme README.%{_mylib}%{_name}%{_p_ext} \
  %define _tmpexec %(tmp=$(mktemp /tmp/scr-XXXXXX); \
 	readme=%{_readme} \
