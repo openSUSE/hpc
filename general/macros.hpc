@@ -32,9 +32,12 @@
 %hpc_libexecdir %{hpc_prefix}/lib
 %hpc_localstatedir %{_localstatedir}
 %hpc_sharedstatedir %{_sharedstatedir}
+# MANPATH
 %hpc_mandir %{hpc_datadir}/man
 %hpc_docdir %{hpc_datadir}/doc/packages
+# INFOPATH
 %hpc_infodir %{hpc_datadir}/info
+# PKG_CONFIG_PATH
 %hpc_pkgconfigdir %{hpc_libdir}/pkgconfig
 %hpc_cmake_dir %{hpc_datadir}/cmake
 %hpc_cmake_moddir %{hpc_cmake_dir}/Modules
