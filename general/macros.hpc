@@ -247,10 +247,13 @@ EOF\
 #
 %hpc_make_modules_dir mkdir -p %{buildroot}%{hpc_module_dep_base}
 
-#
+# Write modules files
+# %hpc_make_modules_extra can be defined by domain specific macros such as %hpc_python_master_package
+# or in the specfile in order to provide a hook for creating extra module files.
 %hpc_write_modules_files \
 %{?_hpc_build_mpi:mkdir -p %{buildroot}%{hpc_install_base}} \
 %hpc_make_modules_dir \
+%{?hpc_make_modules_extra} \
 %{?_hpc_build_xx:mkdir -p %{buildroot}%{hpc_module_dep_install}} \
 %hpc_write_modules_version_file \
 echo "Writing %{buildroot}%{hpc_module_dep_base}%{version}" \
@@ -260,11 +263,14 @@ cat << EOF > %{buildroot}%{hpc_module_dep_base}%{version}
 
 # For files section:
 ## Modules Files
+# %hpc_module_extra can be defined by domain specific macros such as %hpc_python_master_package or in
+# the specfile in order to provide a hook for registering extra files made by %hpc_make_modules_extra
 %hpc_modules_files \
 %{?_hpc_build_xx:%{hpc_module_dep_install}} \
 %dir %{hpc_module_dep_base} \
 %{hpc_module_dep_base}/.version.%{version} \
-%{hpc_module_dep_base}/%{version}
+%{hpc_module_dep_base}/%{version} \
+%{?hpc_module_extra}
 
 # Compilers - use in library package when building compilers
 %hpc_cf_dirs \
@@ -567,6 +573,33 @@ When this package gets updated it installs the latest version of %name. \
    rpm.define("pname " .. pname) \
    rpm.define("name " .. name) \
    -- io.stderr:write("pname "..rpm.expand("%pname").."\\n\\n") \
+   if rpm.expand("%{?hpc_make_modules_extra}") == "" then \
+     rpm.define("hpc_make_modules_extra %hpc_make_modules_extra_python") \
+   end \
+   if rpm.expand("%{?hpc_module_extra}") == "" then \
+     rpm.define("hpc_module_extra %hpc_module_extra_python") \
+   end \
+}
+
+# For python packages, %hpc_write_modules_files is called inside %python_expand.
+# https://github.com/openSUSE/python-rpm-macros#flavor-expansion
+# Provide modules for extra flavors if the expanded flavor has <flavor>_provides defined,
+# such as the primary python flavor providing "python3".
+%hpc_make_modules_extra_python \
+if [ -n "%{?$python_provides}"]; then \
+  targetdir=%{hpc_module_dep_base} \
+  targetdir=${targetdir%%%%/} \
+  for extra in %{$python_provides}; do \
+    ln -sf $targetdir %{buildroot}${targetdir/${python_flavor:-$(cat _current_flavor)}/$extra} \
+  done \
+fi
+
+%hpc_module_extra_python \
+%{lua: \
+local pyflavor = rpm.expand("%python_flavor") \
+for extra in rpm.expand("%{?" .. pyflavor .. "_provides}"):gmatch("%S+") do \
+  print(rpm.expand("%hpc_module_dep_base"):gsub(pyflavor, extra):sub(1,-2) .. "\\n") \
+end \
 }
 
 # %hpc_shebang_sanitize_scripts <dir>
