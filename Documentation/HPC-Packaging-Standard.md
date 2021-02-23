@@ -10,7 +10,7 @@ versions. Also different flavors of the same library may exist.
 
 To make it possible that these different versions coexist on
 the same system and are available to each individual user
-according to his preferences, environment modules are used.
+according to their preferences, environment modules are used.
 
 At SUSE we use Lmod, an environment framework written in
 Lua. Lmod is developed at
@@ -69,7 +69,7 @@ The package name should consist of:
   The version is separated from the previous parts by an underscore:
   `_<package_version_underscore>`
 - The compiler family, separated by a hyphen:
-  -<compiler_family>
+  `-<compiler_family>`
 - If the package was not built with the base compiler, the 'dependency' 
   version of the compiler:
   `[<compiler_dependency_version>]`
