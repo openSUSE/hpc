@@ -237,7 +237,8 @@ following changes:
 
 12. In order for your libraries to be usable it is required to create modules
     files. They should be created from within the spec file (ie build script)
-    using a 'here-style' document:
+    using a 'here-style' document (note, that the content of the module file
+    is an example and needs to be adapted to requirements of each package):
     ```
 	%if %{with hpc}
 	%hpc_write_modules_files
