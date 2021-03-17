@@ -586,10 +586,10 @@ When this package gets updated it installs the latest version of %name. \
 # Provide modules for extra flavors if the expanded flavor has <flavor>_provides defined,
 # such as the primary python flavor providing "python3".
 %hpc_make_modules_extra_python \
-if [ -n "%{?$python_provides}" ]; then \
+if [ -n "%%{?$python_provides}" ]; then \
   targetdir=%{hpc_module_dep_base} \
   targetdir=${targetdir%%%%/} \
-  for extra in %{?$python_provides}; do \
+  for extra in %%{?$python_provides}; do \
     ln -sf $targetdir %{buildroot}${targetdir/${python_flavor:-$(cat _current_flavor)}/$extra} \
   done \
 fi
