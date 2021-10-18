@@ -4,6 +4,4 @@
     <description>slurmctld is the management daemon for SLURM cluster management.</description>
   <port protocol="tcp" port="6817"/>
   <port protocol="udp" port="6817"/>
-  <port protocol="tcp" port="33899"/>
-  <port protocol="udp" port="33899"/>
 </service>
