@@ -615,12 +615,12 @@ end \
      *python3) newline='#! /usr/bin/python3' ;; \
      %{!?_hpc_python3: \
      *python2) newline='#! /usr/bin/python2' ;; \
-     *python1*) %{hpc_verify_python3 $file} && \
+     *python1*) { %{hpc_verify_python3 $file}; } && \
                   newline='#! /usr/bin/python3' || : ;; \
      *python) newline='#! /usr/bin/python' ;; } \
      %{?_hpc_python3: \
      *python2|*python1*|*python) \
-        %{hpc_verify_python3 $file} && \
+        { %{hpc_verify_python3 $file}; } && \
            newline='#! /usr/bin/python3' || : ;; }\
      *perl) newline='#! /usr/bin/perl' ;; \
      *bash) newline='#! /bin/bash' ;; \
